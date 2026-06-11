@@ -6,7 +6,7 @@ mapSize = { width: 20, height: 20 };
 // layer: 0 (Boden), 1 (Objekt oben drauf)
 // isSolid: true (Hindernis), false (begehbar)
 worldData = [
-    { x: 0, y: 6, img: '0126', layer: 0, isSolid: false },
+    { x: 0, y: 6, img: '0125', layer: 0, isSolid: false },
     { x: 1, y: 1, img: '0049', layer: 0, isSolid: false }, // Beispiel: Sand
     { x: 2, y: 2, img: '0049', layer: 1, isSolid: true },
     { x: 3, y: 3, img: '0049', layer: 1, isSolid: true },
