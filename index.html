@@ -11,24 +11,28 @@
     <p>Nutze die Koordinaten, um Objekte zu platzieren. Steuerung: Pfeiltasten.</p>
 
     <div class="interface-container">
-        <div class="axis-cell"></div> <div id="x-axis"></div>       <div id="y-axis"></div>       <div id="game"></div>         </div>
+        <div class="axis-cell"></div> 
+        <div id="x-axis"></div>       
+        <div id="y-axis"></div>       
+        <div id="game"></div>         
+    </div>
 
-    <!-- 1. Zuerst den Collector laden -->
-<script src="level-loader.js"></script>
+    <div id="cinema-overlay">
+        <div class="movie-credits" id="movie-credits"></div>
+    </div>
 
-<!-- 2. Level von Kind 1 laden und registrieren -->
-<script src="map1.js"></script>
-<script>addLevelFromChild("Level 1: Wald");</script>
+    <script src="level-loader.js"></script>
 
-<!-- 3. Level von Kind 2 laden und registrieren -->
-<script src="map2.js"></script>
-<script>addLevelFromChild("Level 2: Wüste");</script>
-<!-- 3. Level von Kind 3 laden und registrieren -->
-<script src="map3.js"></script>
-<script>addLevelFromChild("Level 2: Wüste");</script>
+    <script src="map1.js"></script>
+    <script>
+        addLevelFromChild("Level 1: Wald", mapSize, worldData, enemies, levelConfig, "Lukas & Marie");
+    </script>
 
+    <script src="map2.js"></script>
+    <script>
+        addLevelFromChild("Level 2: Wüste", mapSize, worldData, enemies, levelConfig, "Vitalii & Jonas");
+    </script>
 
-<!-- 5. Am Ende die Spiellogik laden -->
-<script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
