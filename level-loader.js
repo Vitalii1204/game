@@ -1,12 +1,12 @@
-window.allLevels = [];
+window.allLevels = window.allLevels || [];
 
-function addLevelFromChild(name) {
-    // Wir speichern die aktuellen Werte der Variablen in das Array
+function addLevelFromChild(name, mapSize, worldData, enemies, levelConfig, author) {
     window.allLevels.push({
-        levelName: name,
+        name: name,
         mapSize: JSON.parse(JSON.stringify(mapSize)),
         worldData: JSON.parse(JSON.stringify(worldData)),
         enemies: JSON.parse(JSON.stringify(enemies)),
-        finish: typeof levelConfig !== 'undefined' ? levelConfig.finish : { x: 15, y: 10 }
+        finish: JSON.parse(JSON.stringify(levelConfig.finish)),
+        author: author || "Anonym"
     });
 }
