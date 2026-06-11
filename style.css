@@ -1,0 +1,184 @@
+:root {
+    --tile-size: 20px; /* Größe eines Feldes */
+}
+
+body {
+    text-align: center;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #2c3e50;
+    color: white;
+}
+
+/* Excel-Stil Koordinatensystem */
+.interface-container {
+    display: grid;
+    grid-template-columns: 35px auto;
+    margin: 20px auto;
+    width: fit-content;
+    background: #34495e;
+    border: 3px solid #7f8c8d;
+}
+
+#x-axis {
+    display: grid;
+    grid-template-columns: repeat(var(--cols), var(--tile-size));
+    height: 25px;
+    grid-column: 2;
+}
+
+#y-axis {
+    display: grid;
+    grid-template-rows: repeat(var(--rows), var(--tile-size));
+    width: 35px;
+    grid-row: 2;
+}
+
+.axis-cell {
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #bdc3c7;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Spielfeld */
+#game {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(var(--cols), var(--tile-size));
+    grid-template-rows: repeat(var(--rows), var(--tile-size));
+    background-color: #27ae60; /* Базовая трава */
+    grid-column: 2;
+    grid-row: 2;
+    overflow: hidden; /* Чтобы ничего не вылетало */
+}
+
+.tile {
+    width: var(--tile-size);
+    height: var(--tile-size);
+    position: relative; /* Обязательно для абсолютных слоев внутри */
+    background-color: transparent; 
+}
+
+.layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+   
+    pointer-events: none; 
+}
+#player, .enemy {
+    position: absolute;
+    width: var(--tile-size);
+    height: var(--tile-size);
+    background-size: 80%;
+    background-repeat: no-repeat;
+    background-position: center;
+    transition: transform 0.15s linear;
+}
+
+#player {
+    background-image: url('images/hero.png');
+    z-index: 100;
+}
+
+.enemy {
+    z-index: 50;
+}
+/* --- Ziel-Markierung (Finish) --- */
+
+.finish-tile {
+    /* Ein heller, pulsierender Hintergrund, damit man das Ziel sofort sieht */
+    background-color: rgba(46, 204, 113, 0.4); 
+    box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.5);
+    border-radius: 4px;
+    animation: pulse-finish 2s infinite;
+    z-index: 10;
+}
+
+/* Optional: Ein kleiner Stern oder eine Flagge als Overlay, 
+   falls kein Bild in worldData definiert wurde */
+.finish-tile::after {
+    content: "🚩"; /* Oder ein anderes Symbol */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 14px;
+    pointer-events: none;
+}
+
+/* Animation für das Ziel, damit es "leuchtet" */
+@keyframes pulse-finish {
+    0% { background-color: rgba(46, 204, 113, 0.4); }
+    50% { background-color: rgba(241, 196, 15, 0.6); } /* Wechselt leicht zu Gelb/Gold */
+    100% { background-color: rgba(46, 204, 113, 0.4); }
+}
+
+/* Falls das Ziel-Bild aus der levelConfig direkt als Layer kommt */
+.finish-tile .layer {
+    filter: drop-shadow(0 0 5px gold); /* Gibt dem Bild einen goldenen Glanz */
+}
+#level-banner {
+    position: fixed;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: #f1c40f; /* Goldene Farbe */
+    padding: 15px 40px;
+    font-size: 24px;
+    font-weight: bold;
+    border: 2px solid #f1c40f;
+    border-radius: 10px;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    pointer-events: none; /* Klicks gehen durch das Banner durch */
+}
+
+#level-banner.show {
+    opacity: 1;
+}
+
+.coin-layer {
+    position: absolute;
+    top: 25%; 
+    left: 25%;
+    width: 50%; 
+    height: 50%;
+    background-color: #f1c40f; 
+    border-radius: 50%; 
+    border: 2px solid #d4ac0d;
+    box-shadow: 0 0 10px rgba(241, 196, 15, 0.8); 
+    z-index: 20;
+    animation: coin-spin 1.5s infinite ease-in-out; 
+}
+
+@keyframes coin-spin {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+
+#score-display {
+    position: fixed;    
+    top: 10px;          
+    right: 20px;     
+    font-size: 20px; 
+    font-weight: bold;
+    color: #f1c40f;     
+    text-shadow: 3px 3px 0px #000;  
+    background: rgba(0, 0, 0, 0.6); 
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: 2px solid #f1c40f;
+    z-index: 2000;       
+    pointer-events: none;  
+}

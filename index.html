@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>RPG-Baukasten: Lektion 2</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h1>🎮 Erstelle dein eigenes Level</h1>
+    <p>Nutze die Koordinaten, um Objekte zu platzieren. Steuerung: Pfeiltasten.</p>
+
+    <div class="interface-container">
+        <div class="axis-cell"></div> <div id="x-axis"></div>       <div id="y-axis"></div>       <div id="game"></div>         </div>
+
+    <!-- 1. Zuerst den Collector laden -->
+<script src="level-loader.js"></script>
+
+<!-- 2. Level von Kind 1 laden und registrieren -->
+<script src="map1.js"></script>
+<script>addLevelFromChild("Level 1: Wald");</script>
+
+<!-- 3. Level von Kind 2 laden und registrieren -->
+<script src="map2.js"></script>
+<script>addLevelFromChild("Level 2: Wüste");</script>
+
+
+
+<!-- 5. Am Ende die Spiellogik laden -->
+<script src="script.js"></script>
+</body>
+</html>
