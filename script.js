@@ -128,8 +128,10 @@ function checkGameStatus(levelEnemies) {
 }
 
 
+// --- Level-Logik & КИНОФИНАЛ ---
 function nextLevel() {
     keys = {}; // Stop Bewegung
+    
     if (window.allLevels && currentLevelIndex < window.allLevels.length - 1) {
         currentLevelIndex++;
         playerPos = { x: 1, y: 1 };
@@ -137,27 +139,34 @@ function nextLevel() {
         initGame();
         renderAxes();
     } else {
-     
+        // --- НАДЁЖНЫЙ КИНОФИНАЛ (ИСПРАВЛЕННЫЙ ДЛЯ ХОСТИНГА) ---
+        
+        // КРИТИЧЕСКИ ВАЖНО: Останавливаем движение врагов, чтобы они не убили игрока во время кино!
+        if (enemyInterval) clearInterval(enemyInterval);
+        
         const overlay = document.getElementById("cinema-overlay");
         const creditsText = document.getElementById("movie-credits");
         
         if (overlay && creditsText) {
-  
+            // 1. Прячем элементы интерфейса игры (используем принудительный !important через JS)
             const scoreDisplay = document.getElementById("score-display");
             const interfaceContainer = document.querySelector(".interface-container");
             const levelBanner = document.getElementById("level-banner");
             
-            if (scoreDisplay) scoreDisplay.style.display = "none";
-            if (interfaceContainer) interfaceContainer.style.display = "none";
-            if (levelBanner) levelBanner.style.display = "none";
+            if (scoreDisplay) scoreDisplay.style.setProperty("display", "none", "important");
+            if (interfaceContainer) interfaceContainer.style.setProperty("display", "none", "important");
+            if (levelBanner) levelBanner.style.setProperty("display", "none", "important");
 
-     
+            // 2. Полностью сбрасываем анимацию, удаляя класс и заставляя браузер пересчитать стили
             creditsText.classList.remove("run");
+            void creditsText.offsetWidth; // Магия JS: заставляет браузер забыть старую анимацию на хостинге
 
+            // 3. Собираем имена детей из массива уровней
             let designersHTML = window.allLevels ? 
                 window.allLevels.map((lvl, idx) => `<div class='role'>Level ${idx + 1} Designer</div><div>${lvl.author || "Anonym"}</div>`).join("") 
                 : "<div>Die ganze Klasse!</div>";
 
+            // 4. Заполняем титры текстом
             creditsText.innerHTML = `
                 <br><br>
                 <h2>VIKTORIA!</h2>
@@ -173,23 +182,24 @@ function nextLevel() {
                 <h2>DANKE FÜRS SPIELEN!</h2>
             `;
 
-          
-            overlay.style.display = "flex";
+            // 5. Показываем чёрный экран
+            overlay.style.setProperty("display", "flex", "important");
             
+            // 6. ЗАПУСК КИНОТИТРОВ
             setTimeout(() => {
                 creditsText.classList.add("run");
-            }, 50);
+            }, 100);
 
-          
+            // 7. Возврат к игре после окончания фильма (через 14 секунд)
             setTimeout(() => {
-                overlay.style.display = "none";
+                overlay.style.setProperty("display", "none", "important");
                 creditsText.classList.remove("run");
                 
-               
-                if (scoreDisplay) scoreDisplay.style.display = "block";
-                if (interfaceContainer) interfaceContainer.style.display = "grid";
+                // Возвращаем интерфейс на место
+                if (scoreDisplay) scoreDisplay.style.setProperty("display", "block", "");
+                if (interfaceContainer) interfaceContainer.style.setProperty("display", "grid", "");
                 
-               
+                // Полный сброс параметров для новой игры
                 currentLevelIndex = 0;
                 playerPos = { x: 1, y: 1 };
                 score = 0; 
@@ -199,7 +209,7 @@ function nextLevel() {
             }, 14000);
         }
     }
-} 
+}
 
 // --- Gegner-Bewegung ---
 function moveEnemies(levelEnemies) {
