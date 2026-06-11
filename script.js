@@ -45,21 +45,19 @@ function initGame() {
                 .sort((a, b) => a.layer - b.layer);
 
             layers.forEach(data => {
-    const imgLayer = document.createElement("div");
-    
-    if (data.isCoin) {
-        // Если это монетка, даем ей специальный класс
-        imgLayer.className = "coin-layer";
-        tile.dataset.coin = "true";
-    } else {
-        // Если это обычный блок, ставим картинку
-        imgLayer.className = "layer";
-        imgLayer.style.backgroundImage = `url('images/Tiles/tile_${data.img}.png')`;
-    }
+                const imgLayer = document.createElement("div");
+                
+                if (data.isCoin) {
+                    imgLayer.className = "coin-layer";
+                    tile.dataset.coin = "true";
+                } else {
+                    imgLayer.className = "layer";
+                    imgLayer.style.backgroundImage = `url('images/Tiles/tile_${data.img}.png')`;
+                }
 
-    if (data.isSolid) tile.dataset.solid = "true";
-    tile.appendChild(imgLayer);
-});
+                if (data.isSolid) tile.dataset.solid = "true";
+                tile.appendChild(imgLayer);
+            });
 
             if (x === level.finish.x && y === level.finish.y) {
                 tile.classList.add("finish-tile");
@@ -98,26 +96,25 @@ function renderPlayer() {
 // --- Status-Prüfung ---
 function checkGameStatus(levelEnemies) {
     const level = getCurrentLevel();
-const currentTile = document.querySelector(`.tile[data-x="${playerPos.x}"][data-y="${playerPos.y}"]`);
+    const currentTile = document.querySelector(`.tile[data-x="${playerPos.x}"][data-y="${playerPos.y}"]`);
 
-if (currentTile && currentTile.dataset.coin === "true") {
-    // Убираем монету из данных клетки
-    delete currentTile.dataset.coin;
-    
-    // Удаляем визуальный кружочек
-    const coinVisual = currentTile.querySelector(".coin-layer");
-    if (coinVisual) coinVisual.remove();
-    
-    // Увеличиваем счет
-    score++;
-    updateUI();
-}
+    if (currentTile && currentTile.dataset.coin === "true") {
+        delete currentTile.dataset.coin;
+        const coinVisual = currentTile.querySelector(".coin-layer");
+        if (coinVisual) coinVisual.remove();
+        
+        score++;
+        updateUI();
+    }
+
     // 1. Gegner-Kollision (Macht "Hard Reset" auf Level 1)
     const hit = levelEnemies.find(en => Math.round(en.x) === playerPos.x && Math.round(en.y) === playerPos.y);
     if (hit) {
         currentLevelIndex = 0; 
         playerPos = { x: 1, y: 1 };
+        score = 0; 
         keys = {}; 
+        updateUI();
         showLevelTitle("GAME OVER - START BEI LEVEL 1");
         initGame();
         renderAxes();
@@ -130,7 +127,7 @@ if (currentTile && currentTile.dataset.coin === "true") {
     }
 }
 
-// --- Level-Logik ---
+
 function nextLevel() {
     keys = {}; // Stop Bewegung
     if (window.allLevels && currentLevelIndex < window.allLevels.length - 1) {
@@ -140,13 +137,69 @@ function nextLevel() {
         initGame();
         renderAxes();
     } else {
-        showLevelTitle("SIEGER! ALLE LEVEL GESCHAFFT!");
-        currentLevelIndex = 0;
-        playerPos = { x: 1, y: 1 };
-        initGame();
-        renderAxes();
+     
+        const overlay = document.getElementById("cinema-overlay");
+        const creditsText = document.getElementById("movie-credits");
+        
+        if (overlay && creditsText) {
+  
+            const scoreDisplay = document.getElementById("score-display");
+            const interfaceContainer = document.querySelector(".interface-container");
+            const levelBanner = document.getElementById("level-banner");
+            
+            if (scoreDisplay) scoreDisplay.style.display = "none";
+            if (interfaceContainer) interfaceContainer.style.display = "none";
+            if (levelBanner) levelBanner.style.display = "none";
+
+     
+            creditsText.classList.remove("run");
+
+            let designersHTML = window.allLevels ? 
+                window.allLevels.map((lvl, idx) => `<div class='role'>Level ${idx + 1} Designer</div><div>${lvl.author || "Anonym"}</div>`).join("") 
+                : "<div>Die ganze Klasse!</div>";
+
+            creditsText.innerHTML = `
+                <br><br>
+                <h2>VIKTORIA!</h2>
+                <div class="role">Hauptdarsteller (Hero)</div>
+                <div>Matino das Eichhörnchen</div>
+                
+                ${designersHTML}
+                
+                <div class="role">Publisher</div>
+                <div>Vercel & GitHub</div>
+                
+                <br><br>
+                <h2>DANKE FÜRS SPIELEN!</h2>
+            `;
+
+          
+            overlay.style.display = "flex";
+            
+            setTimeout(() => {
+                creditsText.classList.add("run");
+            }, 50);
+
+          
+            setTimeout(() => {
+                overlay.style.display = "none";
+                creditsText.classList.remove("run");
+                
+               
+                if (scoreDisplay) scoreDisplay.style.display = "block";
+                if (interfaceContainer) interfaceContainer.style.display = "grid";
+                
+               
+                currentLevelIndex = 0;
+                playerPos = { x: 1, y: 1 };
+                score = 0; 
+                updateUI();
+                initGame();
+                renderAxes();
+            }, 14000);
+        }
     }
-}
+} 
 
 // --- Gegner-Bewegung ---
 function moveEnemies(levelEnemies) {
@@ -213,22 +266,22 @@ function showLevelTitle(text) {
     banner.classList.remove("show");
     void banner.offsetWidth; // Reset Animation
     banner.classList.add("show");
-    setTimeout(() => banner.classList.remove("show"), 2500);
+    
+    if (banner.dataset.timeoutId) clearTimeout(Number(banner.dataset.timeoutId));
+    let tId = setTimeout(() => banner.classList.remove("show"), 2500);
+    banner.dataset.timeoutId = tId;
 }
+
 function updateUI() {
     let scoreDisplay = document.getElementById("score-display");
-    
-  
     if (!scoreDisplay) {
         scoreDisplay = document.createElement("div");
         scoreDisplay.id = "score-display";
-       
         document.body.appendChild(scoreDisplay);
     }
-    
-   
     scoreDisplay.innerHTML = "💰 Münzen: " + score;
 }
+
 // Start
 initGame();
 renderAxes();
