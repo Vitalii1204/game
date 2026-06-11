@@ -48,16 +48,16 @@ body {
     display: grid;
     grid-template-columns: repeat(var(--cols), var(--tile-size));
     grid-template-rows: repeat(var(--rows), var(--tile-size));
-    background-color: #27ae60; /* Базовая трава */
+    background-color: #27ae60;  
     grid-column: 2;
     grid-row: 2;
-    overflow: hidden; /* Чтобы ничего не вылетало */
+    overflow: hidden;  
 }
 
 .tile {
     width: var(--tile-size);
     height: var(--tile-size);
-    position: relative; /* Обязательно для абсолютных слоев внутри */
+    position: relative;  
     background-color: transparent; 
 }
 
@@ -181,4 +181,65 @@ body {
     border: 2px solid #f1c40f;
     z-index: 2000;       
     pointer-events: none;  
+}
+ 
+
+#cinema-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #000000 !important;  
+    z-index: 99999;                 
+    
+    display: none;                  
+    
+    justify-content: center;
+    align-items: flex-start;
+    overflow: hidden;
+}
+
+ 
+
+.movie-credits {
+    text-align: center;
+    font-family: 'Courier New', Courier, monospace;
+    color: #f1c40f;
+    font-size: 28px;
+    line-height: 2;
+    width: 100%;
+   
+    transform: translateY(100vh); 
+}
+
+ 
+.movie-credits.run {
+    animation: cinema-scroll 12s linear forwards; 
+}
+
+@keyframes cinema-scroll {
+    0% { 
+        transform: translateY(100vh); 
+    }
+    100% { 
+        transform: translateY(-130%);  
+    } 
+}
+
+.movie-credits h2 {
+    font-size: 45px;
+    margin-top: 60px;
+    margin-bottom: 40px;
+    letter-spacing: 5px;
+    color: #ffffff;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+}
+
+.movie-credits .role {
+    color: #bdc3c7;
+    font-size: 20px;
+    text-transform: uppercase;
+    margin-top: 40px;
+}
 }
